@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zoro.mapper.OrdersMapper">
+	<select id="findOrdersAndUser" resultType="com.zoro.domain.OrdersExt">
+		SELECT 
+		  orders.`id`,
+		  orders.`user_id`,
+		  orders.`number`,
+		  user.`username`,
+		  user.`sex` 
+		FROM
+		  orders,
+		  USER 
+		WHERE orders.`user_id` = user.`id`
+		
+	</select>
+
+</mapper>

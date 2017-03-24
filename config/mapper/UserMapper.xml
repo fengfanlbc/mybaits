@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zoro.mapper.UserMapper">
+	<select id="findUserById" parameterType="int" resultType="user">
+		select * from user where id = #{id}
+	</select>
+	
+	<select id="findUserByName" parameterType="java.lang.String" resultType="com.zoro.domain.User">
+	    select * from user where username like '%${value}%'
+	</select>
+	
+	<select id="findUserList" parameterType="com.zoro.domain.UserQueryVO"
+	resultType="user">
+		select * from user where username like '%${user.username}%' and sex = #{user.sex}
+	</select>
+	
+	<select id="findUserCount" parameterType="com.zoro.domain.UserQueryVO" resultType="int">
+		select count(*) from user where username like '%${user.username}%' and sex = #{user.sex}
+	</select>
+	
+	<insert id="insertUser" parameterType="com.zoro.domain.User">
+		<selectKey keyProperty="id" resultType="int" order="AFTER">
+			select last_insert_id()
+		</selectKey>
+		insert into User
+		(username,birthday,sex,address)
+		values(#{username},#{birthday},#{sex},#{address})
+	</insert>
+	
+	<resultMap type="user" id="UserRstMap">
+		<id column="id_" property="id"/>
+		<result column="username_" property="username"/>
+		<result column="sex_" property="sex"/>
+	</resultMap>
+	
+	<select id="findUserRstMap" parameterType="int" resultMap="UserRstMap">
+		select id id_, username username_, sex sex_ from user where id = #{id}
+	</select>
+	
+	<select id="findUserList2" parameterType="vo" resultType="user">
+		select * from user 
+		<where>
+			<if test="user!=null">
+				<if test="user.username!=null and user.username!=''">
+					and username like '%${user.username}%'
+				</if>
+				<if test="user.sex!=null and user.sex!=''">
+					and sex = #{user.sex}
+				</if>
+				<if test="idList != null">
+					and id in 
+					<foreach collection="idList" item="id" open="(" close=")" separator=",">
+						#{id}
+					</foreach>
+				</if>
+			</if>
+		</where>
+	</select>
+	
+	
+	<!-- <insert id="insertUser2" parameterType="com.zoro.domain.User">
+		<selectKey keyProperty="id" order="BEFORE">
+			select uuid()
+		</selectKey>
+		insert into User
+		(id,username,birthday,sex,address)
+		values(#{id},#{username},#{birthday},#{sex},#{address})
+	</insert> -->
+</mapper>
